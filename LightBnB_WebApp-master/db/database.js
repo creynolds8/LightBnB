@@ -67,7 +67,27 @@ const addUser = function (user) {
   const userId = Object.keys(users).length + 1;
   user.id = userId;
   users[userId] = user;
-  return Promise.resolve(user);
+  // return Promise.resolve(user);
+
+  const queryName = user.name
+  const queryEmail = user.email;
+  const queryPassword = user.password;
+  const values = [ queryName, queryEmail, queryPassword ];
+
+  const queryString = `
+  INSERT INTO users (name, email, password) 
+  VALUES ($1, $2, $3)
+  RETURNING *;
+  `;
+  
+  return pool
+    .query(queryString, values)
+    .then((res) => {
+      return res.rows[0];
+    })
+    .catch((err) => {
+      console.log(err.message);
+    })
 };
 
 /// Reservations
