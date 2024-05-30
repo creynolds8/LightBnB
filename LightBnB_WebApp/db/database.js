@@ -64,11 +64,6 @@ const getUserWithId = function (id) {
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser = function (user) {
-  const userId = Object.keys(users).length + 1;
-  user.id = userId;
-  users[userId] = user;
-  // return Promise.resolve(user);
-
   const queryName = user.name
   const queryEmail = user.email;
   const queryPassword = user.password;
