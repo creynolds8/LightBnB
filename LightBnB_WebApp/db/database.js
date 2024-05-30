@@ -18,6 +18,7 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function (email) {
+  //dont need variable assignment, can add values directly into values array
   const queryEmail = email;
   const values = [ queryEmail ];
   const queryString = `
@@ -41,6 +42,7 @@ const getUserWithEmail = function (email) {
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function (id) {
+  //dont need variable assignment, can add values directly into values array
   const queryId = id;
   const values = [ queryId ];
   const queryString = `
@@ -64,6 +66,7 @@ const getUserWithId = function (id) {
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser = function (user) {
+  //dont need variable assignment, can add values directly into values array
   const queryName = user.name
   const queryEmail = user.email;
   const queryPassword = user.password;
