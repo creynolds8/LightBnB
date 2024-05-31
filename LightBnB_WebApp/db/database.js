@@ -154,7 +154,7 @@ const getAllProperties = function (options, limit = 10) {
       }
       if (options.maximum_price_per_night) {
         queryParams.push(options.maximum_price_per_night * 100);
-        queryString += `${hasCondition ? '\nAND' : 'WHERE'} cost_per_night =< $${queryParams.length}::INTEGER`;
+        queryString += `${hasCondition ? '\nAND' : 'WHERE'} cost_per_night <= $${queryParams.length}::INTEGER`;
         hasCondition = true;
       }
       queryString += '\nGROUP BY properties.id'
@@ -187,10 +187,53 @@ const getAllProperties = function (options, limit = 10) {
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function (property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
+  const values = [
+    property.owner_id,
+    property.title,
+    property.description,
+    property.thumbnail_photo_url,
+    property.cover_photo_url,
+    property.cost_per_night,
+    property.parking_spaces,
+    property.number_of_bedrooms,
+    property.number_of_bathrooms,
+    property.country,
+    property.province,
+    property.city,
+    property.street,
+    property.post_code,
+  ]
+  const queryString = `
+  INSERT INTO properties (
+    owner_id, title, description, thumbnail_photo_url, cover_photo_url, cost_per_night, parking_spaces, number_of_bedrooms, number_of_bathrooms, country, province, city, street, post_code, active) VALUES
+  (
+    $1::INTEGER,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6::INTEGER,
+    $7::INTEGER,
+    $8::INTEGER,
+    $9::INTEGER,
+    $10,
+    $11,
+    $12,
+    $13,
+    $14,
+    TRUE
+  )
+  RETURNING *;
+  `;
+  console.log(queryString, values, property);
+  return pool
+    .query(queryString, values)
+    .then((res) => {
+      return res.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    })
 };
 
 module.exports = {
