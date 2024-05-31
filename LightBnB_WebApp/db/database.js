@@ -157,10 +157,16 @@ const getAllProperties = function (options, limit = 10) {
         queryString += `${hasCondition ? '\nAND' : 'WHERE'} cost_per_night < $${queryParams.length}::INTEGER`;
         hasCondition = true;
       }
+      queryString += '\nGROUP BY properties.id'
+      if (options.minimum_rating) {
+        queryParams.push(options.minimum_rating);
+        queryString += `
+        HAVING AVG(rating) > $${queryParams.length}::INTEGER`;
+        hasCondition = true;
+      }
 
       queryParams.push(limit);
       queryString += `
-      GROUP BY properties.id
       ORDER BY cost_per_night
       LIMIT $${queryParams.length};
       `;
