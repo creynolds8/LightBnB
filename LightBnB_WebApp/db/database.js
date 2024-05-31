@@ -229,7 +229,7 @@ const addProperty = function (property) {
   return pool
     .query(queryString, values)
     .then((res) => {
-      return res.rows;
+      return res.rows[0];
     })
     .catch((err) => {
       console.log(err.message);
